@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
-import { getVideos } from "../../../lib/data";
+import { getFolderContents } from "../../../lib/data";
 import { hasAwsVideoConfig } from "../../../lib/env";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const prefix = searchParams.get("prefix") ?? "videos/";
+
   try {
-    const items = await getVideos();
+    const data = await getFolderContents(prefix);
     return NextResponse.json({
-      items,
+      ...data,
       source: hasAwsVideoConfig() ? "s3" : "mock"
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load videos";
+    const message = error instanceof Error ? error.message : "Failed to load folder";
     return NextResponse.json({ message }, { status: 500 });
   }
 }

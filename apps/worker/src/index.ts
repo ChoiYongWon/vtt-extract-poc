@@ -47,8 +47,10 @@ async function main() {
   const openAiApiKey = getRequiredEnv("OPENAI_API_KEY");
   const mp4Path = `/tmp/${jobId}.mp4`;
   const mp3Path = `/tmp/${jobId}.mp3`;
-  const lectureName = (s3Key.split("/").at(-1) ?? s3Key).replace(/\.[^.]+$/, "");
-  const vttS3Key = `subtitles/${lectureName}.vtt`;
+  const keyParts = s3Key.split("/");
+  const lectureName = (keyParts.at(-1) ?? s3Key).replace(/\.[^.]+$/, "");
+  const dir = keyParts.slice(0, -1).join("/");
+  const vttS3Key = dir ? `${dir}/${lectureName}.vtt` : `${lectureName}.vtt`;
 
   try {
     console.log("[worker] runtime config loaded", {

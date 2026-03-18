@@ -1,5 +1,15 @@
 export type JobStatus = "pending" | "processing" | "done" | "error";
 
+export type FolderEntry = {
+  prefix: string;
+  name: string;
+};
+
+export type VideoFolderData = {
+  items: VideoItem[];
+  folders: FolderEntry[];
+};
+
 export type Segment = {
   start: number;
   end: number;
